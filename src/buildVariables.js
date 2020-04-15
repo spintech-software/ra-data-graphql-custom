@@ -80,7 +80,7 @@ const prepareParams = (params, queryType, introspectionResults) => {
                 item =>
                     item.kind === arg.type.kind && item.name === arg.type.name
             ).inputFields;
-            result[key] = prepareParams(param, { args }, introspectionResults);
+            result[key] = prepareParams(param, {args}, introspectionResults);
             return;
         }
 
@@ -109,11 +109,11 @@ const buildGetListVariables = introspectionResults => (
     aorFetchType,
     params
 ) => {
-    let variables = { filter: {} };
+    let variables = {filter: {}};
     if (params.filter) {
         variables.filter = Object.keys(params.filter).reduce((acc, key) => {
             if (key === 'ids') {
-                return { ...acc, ids: params.filter[key] };
+                return {...acc, ids: params.filter[key]};
             }
 
             if (typeof params.filter[key] === 'object') {
@@ -132,7 +132,7 @@ const buildGetListVariables = introspectionResults => (
                         }),
                         {}
                     );
-                    return { ...acc, [`${key}_some`]: filter };
+                    return {...acc, [`${key}_some`]: filter};
                 }
             }
 
@@ -150,11 +150,11 @@ const buildGetListVariables = introspectionResults => (
                     if (filterSome) {
                         return {
                             ...acc,
-                            [`${parts[0]}_some`]: { id: params.filter[key] },
+                            [`${parts[0]}_some`]: {id: params.filter[key]},
                         };
                     }
 
-                    return { ...acc, [parts[0]]: { id: params.filter[key] } };
+                    return {...acc, [parts[0]]: {id: params.filter[key]}};
                 }
 
                 const resourceField = resource.type.fields.find(
@@ -180,8 +180,8 @@ const buildGetListVariables = introspectionResults => (
                         ...acc,
                         [key]: Array.isArray(params.filter[key])
                             ? params.filter[key].map(value =>
-                                  sanitizeValue(type, value)
-                              )
+                                sanitizeValue(type, value)
+                            )
                             : sanitizeValue(type, [params.filter[key]]),
                     };
                 }
@@ -192,18 +192,22 @@ const buildGetListVariables = introspectionResults => (
                 };
             }
 
-            return { ...acc, [key]: params.filter[key] };
+            return {...acc, [key]: params.filter[key]};
         }, {});
     }
 
     if (params.pagination) {
-        variables.page = parseInt(params.pagination.page, 10) - 1;
-        variables.perPage = parseInt(params.pagination.perPage, 10);
+        variables.pagination = {
+            page: parseInt(params.pagination.page, 10) - 1,
+            perPage: parseInt(params.pagination.perPage, 10)
+        }
     }
 
     if (params.sort) {
-        variables.sortField = params.sort.field;
-        variables.sortOrder = params.sort.order;
+        variables.sort = {
+            field: params.sort.field,
+            order: params.sort.order
+        }
     }
 
     return variables;
@@ -214,15 +218,16 @@ const buildCreateUpdateVariables = (
     aorFetchType,
     params,
     queryType
-) =>
-    Object.keys(params.data).reduce((acc, key) => {
+) => {
+    let variables = {};
+    variables[resource.type.name] = Object.keys(params.data).reduce((acc, key) => {
         if (Array.isArray(params.data[key])) {
             const arg = queryType.args.find(a => a.name === `${key}Ids`);
 
             if (arg) {
                 return {
                     ...acc,
-                    [`${key}Ids`]: params.data[key].map(({ id }) => id),
+                    [`${key}Ids`]: params.data[key].map(({id}) => id),
                 };
             }
         }
@@ -243,6 +248,8 @@ const buildCreateUpdateVariables = (
             [key]: params.data[key],
         };
     }, {});
+    return variables
+}
 
 export default introspectionResults => (
     resource,
@@ -267,7 +274,7 @@ export default introspectionResults => (
         }
         case GET_MANY:
             return {
-                filter: { ids: preparedParams.ids },
+                filter: {ids: preparedParams.ids},
             };
         case GET_MANY_REFERENCE: {
             let variables = buildGetListVariables(introspectionResults)(

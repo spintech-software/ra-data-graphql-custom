@@ -44,10 +44,14 @@ describe('buildVariables', () => {
                     author: { id: 'author1' },
                     views: 100,
                 },
-                page: 9,
-                perPage: 10,
-                sortField: 'sortField',
-                sortOrder: 'DESC',
+                pagination: {
+                    page: 9,
+                    perPage: 10,
+                },
+                sort: {
+                    field: 'sortField',
+                    order: 'DESC',
+                }
             });
         });
     });
@@ -73,9 +77,11 @@ describe('buildVariables', () => {
                     queryType
                 )
             ).toEqual({
-                authorId: 'author1',
-                tagsIds: ['tag1', 'tag2'],
-                title: 'Foo',
+                Post: {
+                    authorId: 'author1',
+                    tagsIds: ['tag1', 'tag2'],
+                    title: 'Foo',
+                }
             });
         });
     });
@@ -101,9 +107,11 @@ describe('buildVariables', () => {
                     queryType
                 )
             ).toEqual({
-                authorId: 'author1',
-                tagsIds: ['tag1', 'tag2'],
-                title: 'Foo',
+                Post: {
+                    authorId: 'author1',
+                    tagsIds: ['tag1', 'tag2'],
+                    title: 'Foo',
+                }
             });
         });
     });
@@ -145,10 +153,14 @@ describe('buildVariables', () => {
                 )
             ).toEqual({
                 filter: { author_id: 'author1' },
-                page: 0,
-                perPage: 10,
-                sortField: 'name',
-                sortOrder: 'ASC',
+                pagination: {
+                    page: 0,
+                    perPage: 10,
+                },
+                sort: {
+                    field: 'name',
+                    order: 'ASC',
+                },
             });
         });
     });
