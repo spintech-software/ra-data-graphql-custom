@@ -50,8 +50,8 @@ export default introspectionResults => aorFetchType => response => {
         aorFetchType === GET_MANY_REFERENCE
     ) {
         return {
-            data: response.data.items.map(sanitizeResource),
-            total: response.data.total.count,
+            data: data.result.items.map(sanitizeResource),
+            total: data.result.total.count,
         };
     }
 

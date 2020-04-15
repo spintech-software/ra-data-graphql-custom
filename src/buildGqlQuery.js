@@ -180,7 +180,7 @@ export default introspectionResults => (
                 gqlTypes.selectionSet([
                     gqlTypes.field(
                         gqlTypes.name(queryType.name),
-                        null,
+                        gqlTypes.name("result"),
                         args,
                         null,
                         gqlTypes.selectionSet([

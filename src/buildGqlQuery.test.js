@@ -346,7 +346,7 @@ describe('buildGqlQuery', () => {
             val
         ).toEqual(
             `query allCommand($foo: Int!) {
-  allCommand(foo: $foo) {
+  result: allCommand(foo: $foo) {
     items {
       foo
       linked {
@@ -376,7 +376,7 @@ describe('buildGqlQuery', () => {
             )
         ).toEqual(
             `query allCommand($foo: Int!) {
-  allCommand(foo: $foo) {
+  result: allCommand(foo: $foo) {
     items {
       foo
       linked {
@@ -406,7 +406,7 @@ describe('buildGqlQuery', () => {
             )
         ).toEqual(
             `query allCommand($foo: Int!) {
-  allCommand(foo: $foo) {
+  result: allCommand(foo: $foo) {
     items {
       foo
       linked {

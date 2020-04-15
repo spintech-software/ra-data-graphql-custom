@@ -39,33 +39,35 @@ const testListTypes = type => {
         };
         const response = {
             data: {
-                items: [
-                    {
-                        _typeName: 'Post',
-                        id: 'post1',
-                        title: 'title1',
-                        author: { id: 'author1', firstName: 'Toto' },
-                        coauthor: null,
-                        tags: [
-                            { id: 'tag1', name: 'tag1 name' },
-                            { id: 'tag2', name: 'tag2 name' },
-                        ],
-                        embeddedJson: { foo: 'bar' },
-                    },
-                    {
-                        _typeName: 'Post',
-                        id: 'post2',
-                        title: 'title2',
-                        author: { id: 'author1', firstName: 'Toto' },
-                        coauthor: null,
-                        tags: [
-                            { id: 'tag1', name: 'tag1 name' },
-                            { id: 'tag3', name: 'tag3 name' },
-                        ],
-                        embeddedJson: { foo: 'bar' },
-                    },
-                ],
-                total: { count: 100 },
+                result: {
+                    items: [
+                        {
+                            _typeName: 'Post',
+                            id: 'post1',
+                            title: 'title1',
+                            author: {id: 'author1', firstName: 'Toto'},
+                            coauthor: null,
+                            tags: [
+                                {id: 'tag1', name: 'tag1 name'},
+                                {id: 'tag2', name: 'tag2 name'},
+                            ],
+                            embeddedJson: {foo: 'bar'},
+                        },
+                        {
+                            _typeName: 'Post',
+                            id: 'post2',
+                            title: 'title2',
+                            author: {id: 'author1', firstName: 'Toto'},
+                            coauthor: null,
+                            tags: [
+                                {id: 'tag1', name: 'tag1 name'},
+                                {id: 'tag3', name: 'tag3 name'},
+                            ],
+                            embeddedJson: {foo: 'bar'},
+                        },
+                    ],
+                    total: {count: 100},
+                }
             },
         };
 
