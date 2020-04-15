@@ -1,9 +1,9 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "./ra-admin-tsconfig.json",
     "compilerOptions": {
         "outDir": "lib",
         "rootDir": "src"
     },
-    "exclude": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.spec.js"],
+    "exclude": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.spec.js", ".idea", ".node_modules"],
     "include": ["src"]
 }
