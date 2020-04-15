@@ -333,28 +333,32 @@ describe('buildGqlQuery', () => {
     const params = { foo: 'foo_value' };
 
     it('returns the correct query for GET_LIST', () => {
-        expect(
-            print(
-                buildGqlQuery(introspectionResults)(
-                    resource,
-                    GET_LIST,
-                    queryType,
-                    params
-                )
+        let val = print(
+            buildGqlQuery(introspectionResults)(
+                resource,
+                GET_LIST,
+                queryType,
+                params
             )
+        )
+
+        expect(
+            val
         ).toEqual(
             `query allCommand($foo: Int!) {
-  items: allCommand(foo: $foo) {
-    foo
-    linked {
+  allCommand(foo: $foo) {
+    items {
       foo
+      linked {
+        foo
+      }
+      resource {
+        id
+      }
     }
-    resource {
-      id
+    total {
+      count
     }
-  }
-  total: _allCommandMeta(foo: $foo) {
-    count
   }
 }
 `
@@ -372,17 +376,19 @@ describe('buildGqlQuery', () => {
             )
         ).toEqual(
             `query allCommand($foo: Int!) {
-  items: allCommand(foo: $foo) {
-    foo
-    linked {
+  allCommand(foo: $foo) {
+    items {
       foo
+      linked {
+        foo
+      }
+      resource {
+        id
+      }
     }
-    resource {
-      id
+    total {
+      count
     }
-  }
-  total: _allCommandMeta(foo: $foo) {
-    count
   }
 }
 `
@@ -400,17 +406,19 @@ describe('buildGqlQuery', () => {
             )
         ).toEqual(
             `query allCommand($foo: Int!) {
-  items: allCommand(foo: $foo) {
-    foo
-    linked {
+  allCommand(foo: $foo) {
+    items {
       foo
+      linked {
+        foo
+      }
+      resource {
+        id
+      }
     }
-    resource {
-      id
+    total {
+      count
     }
-  }
-  total: _allCommandMeta(foo: $foo) {
-    count
   }
 }
 `

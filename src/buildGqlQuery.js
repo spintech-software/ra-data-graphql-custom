@@ -180,18 +180,26 @@ export default introspectionResults => (
                 gqlTypes.selectionSet([
                     gqlTypes.field(
                         gqlTypes.name(queryType.name),
-                        gqlTypes.name('items'),
+                        null,
                         args,
                         null,
-                        gqlTypes.selectionSet(fields)
-                    ),
-                    gqlTypes.field(
-                        gqlTypes.name(`_${queryType.name}Meta`),
-                        gqlTypes.name('total'),
-                        metaArgs,
-                        null,
                         gqlTypes.selectionSet([
-                            gqlTypes.field(gqlTypes.name('count')),
+                            gqlTypes.field(
+                                gqlTypes.name('items'),
+                                null,
+                                null,
+                                null,
+                                gqlTypes.selectionSet(fields)
+                            ),
+                            gqlTypes.field(
+                                gqlTypes.name('total'),
+                                null,
+                                null,
+                                null,
+                                gqlTypes.selectionSet([
+                                    gqlTypes.field(gqlTypes.name('count')),
+                                ]),
+                            ),
                         ])
                     ),
                 ]),
