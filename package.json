@@ -1,7 +1,7 @@
 {
-    "name": "ra-data-graphql-simple",
+    "name": "ra-data-graphql-custom",
     "version": "3.4.2",
-    "description": "A GraphQL simple data provider for react-admin",
+    "description": "A GraphQL custom data provider for react-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
     "sideEffects": false,
@@ -14,7 +14,8 @@
     },
     "homepage": "https://github.com/marmelab/react-admin#readme",
     "authors": [
-        "Gildas Garcia"
+        "Gildas Garcia",
+        "Sergey Petrunin"
     ],
     "keywords": [
         "reactjs",
