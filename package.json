@@ -31,7 +31,8 @@
         "build-cjs": "rimraf ./lib && tsc",
         "build-esm": "rimraf ./esm && tsc --outDir esm --module es2015",
         "watch": "tsc --outDir esm --module es2015 --watch",
-        "test": "jest"
+        "test": "jest",
+        "clear": "rimraf ./lib && rimraf ./esm"
     },
     "moduleDirectories": [
         "node_modules",

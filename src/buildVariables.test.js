@@ -7,6 +7,7 @@ import {
     DELETE,
 } from 'ra-core';
 import buildVariables from './buildVariables';
+import introspection from "./testdata/introspectionHelper";
 
 describe('buildVariables', () => {
     describe('GET_LIST', () => {
@@ -57,6 +58,8 @@ describe('buildVariables', () => {
     });
 
     describe('CREATE', () => {
+        const introspectionResult = introspection();
+
         it('returns correct variables', () => {
             const params = {
                 data: {
@@ -70,7 +73,7 @@ describe('buildVariables', () => {
             };
 
             expect(
-                buildVariables()(
+                buildVariables(introspectionResult)(
                     { type: { name: 'Post' } },
                     CREATE,
                     params,
@@ -84,9 +87,36 @@ describe('buildVariables', () => {
                 }
             });
         });
+
+        it('returns correct variables when input object defined', () => {
+            const params = {
+                data: {
+                    first_name: 'Bobby',
+                    last_name: 'Foo',
+                    full_name: 'Bobby Foo'
+                },
+            };
+            const queryType = {};
+
+            expect(
+                buildVariables(introspectionResult)(
+                    { type: { name: 'Contact' } },
+                    CREATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                Contact: {
+                    first_name: 'Bobby',
+                    last_name: 'Foo',
+                }
+            });
+        });
     });
 
     describe('UPDATE', () => {
+        const introspectionResult = introspection();
+
         it('returns correct variables', () => {
             const params = {
                 data: {
@@ -100,7 +130,7 @@ describe('buildVariables', () => {
             };
 
             expect(
-                buildVariables()(
+                buildVariables(introspectionResult)(
                     { type: { name: 'Post' } },
                     UPDATE,
                     params,
@@ -111,6 +141,30 @@ describe('buildVariables', () => {
                     authorId: 'author1',
                     tagsIds: ['tag1', 'tag2'],
                     title: 'Foo',
+                }
+            });
+        });
+        it('returns correct variables when input object defined', () => {
+            const params = {
+                data: {
+                    first_name: 'Bobby',
+                    last_name: 'Foo',
+                    full_name: 'Bobby Foo'
+                },
+            };
+            const queryType = {};
+
+            expect(
+                buildVariables(introspectionResult)(
+                    { type: { name: 'Contact' } },
+                    UPDATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                Contact: {
+                    first_name: 'Bobby',
+                    last_name: 'Foo',
                 }
             });
         });
