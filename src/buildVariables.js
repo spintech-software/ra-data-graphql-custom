@@ -213,14 +213,31 @@ const buildGetListVariables = introspectionResults => (
     return variables;
 };
 
-const buildCreateUpdateVariables = (
+const buildCreateUpdateVariables = introspectionResults => (
     resource,
     aorFetchType,
     params,
     queryType
 ) => {
     let variables = {};
-    variables[resource.type.name] = Object.keys(params.data).reduce((acc, key) => {
+    let objectFields = Object.keys(params.data)
+
+    const inputType = introspectionResults.types.find(
+        t => t.name === `${resource.type.name}Input`
+    );
+
+    if (typeof inputType !== "undefined") {
+        const inputFields = inputType.inputFields.reduce((acc = {}, field) =>{
+            return {
+                ...acc,
+                [field.name]:1,
+            }
+        }, {})
+
+        objectFields = objectFields.filter((key)=> inputFields.hasOwnProperty(key))
+    }
+
+    variables[resource.type.name] = objectFields.reduce((acc, key) => {
         if (Array.isArray(params.data[key])) {
             const arg = queryType.args.find(a => a.name === `${key}Ids`);
 
@@ -298,7 +315,7 @@ export default introspectionResults => (
             };
         case CREATE:
         case UPDATE: {
-            return buildCreateUpdateVariables(
+            return buildCreateUpdateVariables(introspectionResults)(
                 resource,
                 aorFetchType,
                 preparedParams,
