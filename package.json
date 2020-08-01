@@ -1,5 +1,5 @@
 {
-    "name": "ra-data-graphql-custom",
+    "name": "@spintech-software/ra-data-graphql-custom",
     "version": "3.4.2",
     "description": "A GraphQL custom data provider for react-admin",
     "main": "lib/index.js",
@@ -7,10 +7,11 @@
     "sideEffects": false,
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/marmelab/react-admin.git"
+        "url": "git@github.com:spintech-software/ra-data-graphql-custom.git"
     },
+    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
     "bugs": {
-        "url": "https://github.com/marmelab/react-admin/issues"
+        "url": "https://github.com/spintech-software/ra-data-graphql-custom/issues"
     },
     "homepage": "https://github.com/marmelab/react-admin#readme",
     "authors": [
