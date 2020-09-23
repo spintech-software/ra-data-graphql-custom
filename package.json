@@ -1,6 +1,6 @@
 {
     "name": "@spintech-software/ra-data-graphql-custom",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A GraphQL custom data provider for react-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
@@ -9,7 +9,9 @@
         "type": "git",
         "url": "git@github.com:spintech-software/ra-data-graphql-custom.git"
     },
-    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
     "bugs": {
         "url": "https://github.com/spintech-software/ra-data-graphql-custom/issues"
     },
@@ -34,7 +36,7 @@
         "watch": "tsc --outDir esm --module es2015 --watch",
         "test": "jest",
         "clear": "rimraf ./lib && rimraf ./esm",
-        "pub": "yarn clear && yarn build && npm publish"
+        "pub": "yarn build && yarn publish"
     },
     "moduleDirectories": [
         "node_modules",
