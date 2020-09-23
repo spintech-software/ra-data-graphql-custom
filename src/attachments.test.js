@@ -21,6 +21,9 @@ describe('attachments', function () {
         it('should return true for attachment', function () {
             expect(isAttachment(attachment)).toBeTruthy();
         });
+        it('should return false for null', function () {
+            expect(isAttachment(null)).toBeFalsy();
+        });
     });
     describe('isAttachmentArray', function () {
         it('should return false for plain types', function () {
