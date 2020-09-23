@@ -1,6 +1,6 @@
 {
     "name": "@spintech-software/ra-data-graphql-custom",
-    "version": "3.4.2",
+    "version": "0.1.1",
     "description": "A GraphQL custom data provider for react-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
