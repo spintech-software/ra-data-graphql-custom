@@ -1,0 +1,76 @@
+scalar Any
+scalar Time
+scalar Upload
+scalar Map
+
+enum Order {
+    ASC
+    DESC
+}
+
+type Query {
+    Contact(id: ID!): Contact
+    allContacts(filter: ContactFilter, pagination: Pagination, sort: Sort): Contacts!
+}
+
+type Mutation {
+    createContact(Contact: ContactInput!): Contact!
+}
+
+type Contacts {
+    items: [Contact!]!
+    total: ListMeta!
+}
+
+type ListMeta {
+    count: Int!
+}
+
+type Contact {
+    id: ID!
+    created_at: Time!
+    age: Int!
+    info: Info!
+    readonly: String
+}
+
+type Info {
+    first_name: String!
+    last_name: String!
+    full_name: String
+    contact_info: ContactInfo!
+}
+
+type ContactInfo {
+    phone: String!
+}
+
+input ContactFilter {
+    q: String
+}
+
+input ContactInput {
+    age: Int!
+    info: InfoInput!
+}
+
+input InfoInput {
+    first_name: String!
+    last_name: String!
+    contact_info: ContactInfoInput!
+}
+
+input ContactInfoInput {
+    phone: String!
+}
+
+input Pagination {
+    page: Int!
+    perPage: Int!
+}
+
+input Sort {
+    field: String!
+    order: Order!
+}
+

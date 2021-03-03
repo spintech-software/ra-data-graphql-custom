@@ -214,6 +214,105 @@ const buildGetListVariables = introspectionResults => (
     return variables;
 };
 
+function lookupType(introspectionResults, typeName) {
+    return introspectionResults.types.find(
+        t => t.name === typeName
+    );
+}
+
+
+function getObjectType(type) {
+    if (type.ofType !== null) {
+        return getObjectType(type.ofType)
+    }
+
+    return type
+}
+
+function getInputFieldType(type, fieldName) {
+    const field = type.inputFields.find(element => element.name === fieldName);
+    return getObjectType(field.type)
+}
+
+function filterInputFields(introspectionResults, inputType, objectFields) {
+    if (typeof inputType === "undefined") {
+        return objectFields
+    }
+
+    const inputFields = inputType.inputFields.reduce((acc = {}, field) => {
+        return {
+            ...acc,
+            [field.name]: 1,
+        }
+    }, {})
+
+    return objectFields.filter((key) => inputFields.hasOwnProperty(key))
+}
+
+function buildObjectFields(introspectionResults, typeName, objectFields, data, queryType) {
+    const inputType = lookupType(introspectionResults, typeName);
+    const fields = filterInputFields(introspectionResults, inputType, objectFields)
+
+    return fields.reduce((acc, key) => {
+        if (isAttachment(data[key])) {
+            return {
+                ...acc,
+                [key]: toAttachment(data[key]),
+            }
+        }
+
+        if (isAttachmentArray(data[key])) {
+            return {
+                ...acc,
+                [key]: toAttachmentArray(data[key]),
+            }
+        }
+
+        if (Array.isArray(data[key])) {
+            if (queryType) {
+                const arg = queryType.args.find(a => a.name === `${key}Ids`);
+
+                if (arg) {
+                    return {
+                        ...acc,
+                        [`${key}Ids`]: data[key].map(({id}) => id),
+                    };
+                }
+            }
+        }
+
+        if (typeof data[key] === 'object') {
+            const type = getInputFieldType(inputType, key)
+
+            if (type.kind === "INPUT_OBJECT") {
+                const nestedObjectFields = Object.keys(data[key])
+                const objectData = data[key]
+
+                return {
+                    ...acc,
+                    [key]: buildObjectFields(introspectionResults, type.name, nestedObjectFields, objectData)
+                };
+            }
+
+            if (queryType) {
+                const arg = queryType.args.find(a => a.name === `${key}Id`);
+
+                if (arg) {
+                    return {
+                        ...acc,
+                        [`${key}Id`]: data[key].id,
+                    };
+                }
+            }
+        }
+
+        return {
+            ...acc,
+            [key]: data[key],
+        };
+    }, {});
+}
+
 const buildCreateUpdateVariables = introspectionResults => (
     resource,
     aorFetchType,
@@ -223,63 +322,7 @@ const buildCreateUpdateVariables = introspectionResults => (
     let variables = {};
     let objectFields = Object.keys(params.data)
 
-    const inputType = introspectionResults.types.find(
-        t => t.name === `${resource.type.name}Input`
-    );
-
-    if (typeof inputType !== "undefined") {
-        const inputFields = inputType.inputFields.reduce((acc = {}, field) =>{
-            return {
-                ...acc,
-                [field.name]:1,
-            }
-        }, {})
-
-        objectFields = objectFields.filter((key)=> inputFields.hasOwnProperty(key))
-    }
-
-    variables[resource.type.name] = objectFields.reduce((acc, key) => {
-        if (isAttachment(params.data[key])) {
-            return {
-                ...acc,
-                [key]: toAttachment(params.data[key]),
-            }
-        }
-
-        if (isAttachmentArray(params.data[key])) {
-            return {
-                ...acc,
-                [key]: toAttachmentArray(params.data[key]),
-            }
-        }
-
-        if (Array.isArray(params.data[key])) {
-            const arg = queryType.args.find(a => a.name === `${key}Ids`);
-
-            if (arg) {
-                return {
-                    ...acc,
-                    [`${key}Ids`]: params.data[key].map(({id}) => id),
-                };
-            }
-        }
-
-        if (typeof params.data[key] === 'object') {
-            const arg = queryType.args.find(a => a.name === `${key}Id`);
-
-            if (arg) {
-                return {
-                    ...acc,
-                    [`${key}Id`]: params.data[key].id,
-                };
-            }
-        }
-
-        return {
-            ...acc,
-            [key]: params.data[key],
-        };
-    }, {});
+    variables[resource.type.name] = buildObjectFields(introspectionResults, `${resource.type.name}Input`, objectFields, params.data, queryType);
     return variables
 }
 

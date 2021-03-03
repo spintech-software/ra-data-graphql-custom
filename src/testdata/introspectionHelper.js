@@ -1,9 +1,11 @@
-// TODO: how to properly import this file?
-// import resolveIntrospection from '../node_modules/ra-data-graphql/src/introspection';
-
-import introspectionSchema from './introspection.json';
 import { GET_LIST, GET_ONE, CREATE, UPDATE } from 'ra-core';
 import { ALL_TYPES } from 'ra-data-graphql';
+
+import {buildSchema, introspectionFromSchema} from 'graphql';
+
+const fs = require('fs');
+const path = require('path');
+
 
 export default () => {
     const options = {
@@ -15,7 +17,14 @@ export default () => {
         }
     }
 
-    const schema = introspectionSchema.data.__schema;
+    const rawSchema = fs.readFileSync(
+        path.join(__dirname, 'schema.graphql'),
+        'utf8',
+    );
+
+    const gqlSchema = buildSchema(rawSchema)
+    const introspection = introspectionFromSchema(gqlSchema)
+    const schema = introspection.__schema;
 
     const queries = schema.types.reduce((acc, type) => {
         if (
