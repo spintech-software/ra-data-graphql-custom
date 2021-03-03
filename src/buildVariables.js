@@ -220,18 +220,9 @@ function lookupType(introspectionResults, typeName) {
     );
 }
 
-
-function getObjectType(type) {
-    if (type.ofType !== null) {
-        return getObjectType(type.ofType)
-    }
-
-    return type
-}
-
 function getInputFieldType(type, fieldName) {
     const field = type.inputFields.find(element => element.name === fieldName);
-    return getObjectType(field.type)
+    return getFinalType(field.type)
 }
 
 function filterInputFields(introspectionResults, inputType, objectFields) {
@@ -249,8 +240,7 @@ function filterInputFields(introspectionResults, inputType, objectFields) {
     return objectFields.filter((key) => inputFields.hasOwnProperty(key))
 }
 
-function buildObjectFields(introspectionResults, typeName, objectFields, data, queryType) {
-    const inputType = lookupType(introspectionResults, typeName);
+function buildObjectFields(introspectionResults, inputType, objectFields, data, queryType) {
     const fields = filterInputFields(introspectionResults, inputType, objectFields)
 
     return fields.reduce((acc, key) => {
@@ -269,6 +259,20 @@ function buildObjectFields(introspectionResults, typeName, objectFields, data, q
         }
 
         if (Array.isArray(data[key])) {
+            const type = getInputFieldType(inputType, key)
+
+            if (type.kind === "INPUT_OBJECT") {
+                const nestedObjectInputType = lookupType(introspectionResults, type.name);
+                const objectData = data[key]
+
+                return {
+                    ...acc,
+                    [key]: objectData.map((value) => {
+                        return buildObjectFields(introspectionResults, nestedObjectInputType,  Object.keys(value), value)
+                    })
+                };
+            }
+
             if (queryType) {
                 const arg = queryType.args.find(a => a.name === `${key}Ids`);
 
@@ -285,12 +289,13 @@ function buildObjectFields(introspectionResults, typeName, objectFields, data, q
             const type = getInputFieldType(inputType, key)
 
             if (type.kind === "INPUT_OBJECT") {
+                const nestedObjectInputType = lookupType(introspectionResults, type.name);
                 const nestedObjectFields = Object.keys(data[key])
                 const objectData = data[key]
 
                 return {
                     ...acc,
-                    [key]: buildObjectFields(introspectionResults, type.name, nestedObjectFields, objectData)
+                    [key]: buildObjectFields(introspectionResults, nestedObjectInputType, nestedObjectFields, objectData)
                 };
             }
 
@@ -322,7 +327,8 @@ const buildCreateUpdateVariables = introspectionResults => (
     let variables = {};
     let objectFields = Object.keys(params.data)
 
-    variables[resource.type.name] = buildObjectFields(introspectionResults, `${resource.type.name}Input`, objectFields, params.data, queryType);
+    const inputType = lookupType(introspectionResults, `${resource.type.name}Input`);
+    variables[resource.type.name] = buildObjectFields(introspectionResults, inputType, objectFields, params.data, queryType);
     return variables
 }
 

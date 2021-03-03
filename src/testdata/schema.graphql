@@ -30,7 +30,7 @@ type Contact {
     id: ID!
     created_at: Time!
     age: Int!
-    info: Info!
+    info: [Info]!
     readonly: String
 }
 
@@ -51,7 +51,7 @@ input ContactFilter {
 
 input ContactInput {
     age: Int!
-    info: InfoInput!
+    info: [InfoInput]!
 }
 
 input InfoInput {

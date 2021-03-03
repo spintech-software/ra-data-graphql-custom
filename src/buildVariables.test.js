@@ -95,14 +95,14 @@ describe('buildVariables', () => {
                 data: {
                     age: 50,
                     readonly: 'something',
-                    info: {
+                    info: [{
                         first_name: 'Bobby',
                         last_name: 'Foo',
                         full_name: 'Bobby Foo',
                         contact_info: {
                             phone: "123"
                         }
-                    }
+                    }]
                 },
             };
 
@@ -116,13 +116,13 @@ describe('buildVariables', () => {
             ).toEqual({
                 Contact: {
                     age: 50,
-                    info: {
+                    info: [{
                         first_name: 'Bobby',
                         last_name: 'Foo',
                         contact_info: {
                             phone: "123"
                         }
-                    }
+                    }]
                 }
             });
         });
