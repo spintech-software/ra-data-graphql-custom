@@ -11,7 +11,6 @@ import {
 
 import getFinalType from './getFinalType';
 import isList from './isList';
-import {isAttachment, isAttachmentArray, toAttachment, toAttachmentArray} from "./attachments";
 
 const sanitizeValue = (type, value) => {
     if (type.name === 'Int') {
@@ -244,20 +243,6 @@ function buildObjectFields(introspectionResults, inputType, objectFields, data, 
     const fields = filterInputFields(introspectionResults, inputType, objectFields)
 
     return fields.reduce((acc, key) => {
-        if (isAttachment(data[key])) {
-            return {
-                ...acc,
-                [key]: toAttachment(data[key]),
-            }
-        }
-
-        if (isAttachmentArray(data[key])) {
-            return {
-                ...acc,
-                [key]: toAttachmentArray(data[key]),
-            }
-        }
-
         if (Array.isArray(data[key])) {
             const type = getInputFieldType(inputType, key)
 
